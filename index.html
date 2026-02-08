@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwerk Lernen - Schritt für Schritt Anleitungen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #1f1f1f;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 1rem auto;
+            position: relative;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            background: #2d2d2d;
+            border: 2px solid #444;
+            border-radius: 25px;
+            color: #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #666;
+            background: #333;
+        }
+
+        #searchInput::placeholder {
+            color: #888;
+        }
+
+        .category-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1rem;
+            background: #2d2d2d;
+            border: 2px solid #444;
+            border-radius: 20px;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .category-btn:hover {
+            background: #3d3d3d;
+            border-color: #666;
+        }
+
+        .category-btn.active {
+            background: #4a4a4a;
+            border-color: #777;
+        }
+
+        .crafts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .craft-card {
+            background: #2d2d2d;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .craft-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+        }
+
+        .craft-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #3d3d3d, #4d4d4d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .craft-content {
+            padding: 1rem;
+        }
+
+        .craft-title {
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .craft-category {
+            color: #999;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .craft-description {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: #1f1f1f;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 900px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #fff;
+        }
+
+        .tutorial-header {
+            margin-bottom: 2rem;
+        }
+
+        .tutorial-title {
+            color: #ffffff;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: #3d3d3d;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .materials {
+            background: #2d2d2d;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .materials h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .materials ul {
+            list-style-position: inside;
+            color: #b0b0b0;
+        }
+
+        .steps {
+            margin-top: 2rem;
+        }
+
+        .step {
+            background: #2d2d2d;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #4a4a4a;
+        }
+
+        .step-number {
+            color: #888;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-title {
+            color: #ffffff;
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .step-description {
+            color: #b0b0b0;
+            line-height: 1.8;
+        }
+
+        .step-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #3d3d3d, #4d4d4d);
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .tips {
+            background: #2d2d2d;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border-left: 4px solid #555;
+        }
+
+        .tips h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #888;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .crafts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .tutorial-title {
+                font-size: 1.5rem;
+            }
+
+            .category-btn {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .crafts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🧵 Handwerk Lernen</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Suche nach Handwerk... (z.B. Häkeln, Stricken, Nähen)">
+            </div>
+            <div class="category-nav">
+                <button class="category-btn active" data-category="all">Alle</button>
+                <button class="category-btn" data-category="textil">Textil</button>
+                <button class="category-btn" data-category="holz">Holz</button>
+                <button class="category-btn" data-category="papier">Papier</button>
+                <button class="category-btn" data-category="metall">Metall</button>
+                <button class="category-btn" data-category="keramik">Keramik & Ton</button>
+                <button class="category-btn" data-category="schmuck">Schmuck</button>
+                <button class="category-btn" data-category="deko">Deko</button>
+                <button class="category-btn" data-category="küche">Küche</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="crafts-grid" id="craftsGrid"></div>
+    </div>
+
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="tutorialContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const crafts = [
+            // TEXTIL
+            {
+                name: "Häkeln Grundlagen",
+                category: "textil",
+                icon: "🧶",
+                difficulty: "Anfänger",
+                description: "Lerne die Grundtechniken des Häkelns von Anfang an",
+                materials: ["Häkelnadel (Größe 3-4mm)", "Wolle (ca. 100g)", "Schere", "Wollnadel"],
+                steps: [
+                    {
+                        title: "Anfangsschlinge machen",
+                        description: "Forme mit dem Garn eine Schlaufe. Führe das Ende durch die Schlaufe und ziehe leicht an. Schiebe die Nadel durch die Schlinge.",
+                        icon: "🔗"
+                    },
+                    {
+                        title: "Luftmaschen häkeln",
+                        description: "Lege den Faden über die Nadel, hole ihn durch die Schlinge auf der Nadel. Wiederhole dies für die gewünschte Anzahl an Luftmaschen.",
+                        icon: "⛓️"
+                    },
+                    {
+                        title: "Feste Maschen",
+                        description: "Stich in die zweite Luftmasche ein, hole den Faden und ziehe ihn durch. Nun liegen 2 Schlingen auf der Nadel. Hole den Faden erneut und ziehe ihn durch beide Schlingen.",
+                        icon: "🔄"
+                    },
+                    {
+                        title: "Reihen häkeln",
+                        description: "Am Ende der Reihe machst du eine Wendeluftmasche und arbeitest zurück. Wiederhole dies bis zur gewünschten Größe.",
+                        icon: "↔️"
+                    }
+                ],
+                tips: [
+                    "Halte die Spannung gleichmäßig",
+                    "Zähle deine Maschen regelmäßig",
+                    "Verwende zu Beginn hellere Wolle - du siehst die Maschen besser"
+                ]
+            },
+            {
+                name: "Stricken für Anfänger",
+                category: "textil",
+                icon: "🧵",
+                difficulty: "Anfänger",
+                description: "Die ersten Schritte beim Stricken meistern",
+                materials: ["2 Stricknadeln (Größe 4-5mm)", "Strickwolle", "Schere", "Maßband"],
+                steps: [
+                    {
+                        title: "Maschen anschlagen",
+                        description: "Mache eine Schlinge, lege sie auf die Nadel. Mit der zweiten Nadel durch die Schlinge stechen, Faden holen und neue Masche auf die linke Nadel legen. Wiederhole bis zur gewünschten Maschenanzahl.",
+                        icon: "🎯"
+                    },
+                    {
+                        title: "Rechte Maschen stricken",
+                        description: "Steche von links nach rechts in die Masche, lege den Faden hinter die Arbeit, hole ihn durch und lasse die alte Masche von der linken Nadel gleiten.",
+                        icon: "➡️"
+                    },
+                    {
+                        title: "Linke Maschen stricken",
+                        description: "Der Faden liegt vor der Arbeit. Steche von rechts nach links in die Masche, hole den Faden durch und lasse die alte Masche fallen.",
+                        icon: "⬅️"
+                    },
+                    {
+                        title: "Maschen abketten",
+                        description: "Stricke 2 Maschen, ziehe die erste über die zweite. Stricke die nächste Masche und wiederhole den Vorgang bis zum Ende.",
+                        icon: "🔒"
+                    }
+                ],
+                tips: [
+                    "Halte die Nadeln locker - verkrampfe nicht",
+                    "Übe mit mittlerer Wolle, nicht zu dünn",
+                    "Zähle nach jeder Reihe die Maschen"
+                ]
+            },
+            {
+                name: "Nähen mit der Nähmaschine",
+                category: "textil",
+                icon: "🪡",
+                difficulty: "Anfänger",
+                description: "Grundlegende Nähmaschinen-Techniken lernen",
+                materials: ["Nähmaschine", "Garn", "Stoff", "Stecknadeln", "Schere", "Maßband"],
+                steps: [
+                    {
+                        title: "Maschine einfädeln",
+                        description: "Folge dem Einfädelpfad deiner Maschine. Faden durch die Fadenführung, Spannungsscheiben, Fadenhebel und Nadel ziehen. Spule einlegen und Unterfaden hochholen.",
+                        icon: "🎯"
+                    },
+                    {
+                        title: "Stoffkanten versäubern",
+                        description: "Stelle den Zickzackstich ein. Führe die Stoffkante gleichmäßig unter dem Nähfuß durch, sodass die rechte Nadelposition knapp neben dem Stoff einsticht.",
+                        icon: "〰️"
+                    },
+                    {
+                        title: "Gerade Naht nähen",
+                        description: "Stecke die Stofflagen rechts auf rechts zusammen. Nähe mit geradem Stich und 1cm Nahtzugabe. Verriegle Anfang und Ende durch Rückwärtsnähen.",
+                        icon: "➖"
+                    },
+                    {
+                        title: "Naht bügeln",
+                        description: "Bügle die Nahtzugaben auseinander oder zu einer Seite. Dies gibt ein professionelles Finish.",
+                        icon: "🔥"
+                    }
+                ],
+                tips: [
+                    "Teste immer zuerst auf einem Stoffrest",
+                    "Verwende die richtige Nadel für deinen Stoff",
+                    "Halte die Maschine regelmäßig sauber"
+                ]
+            },
+            {
+                name: "Handnähen Grundstiche",
+                category: "textil",
+                icon: "🪢",
+                difficulty: "Anfänger",
+                description: "Wichtige Handnähstiche für Reparaturen und Projekte",
+                materials: ["Nähnadeln verschiedener Größen", "Nähgarn", "Schere", "Fingerhut", "Stecknadeln"],
+                steps: [
+                    {
+                        title: "Heftstich",
+                        description: "Der einfachste Stich. Steche die Nadel gleichmäßig auf und ab durch den Stoff. Ideal zum Zusammenheften vor dem Maschinennähen.",
+                        icon: "- - -"
+                    },
+                    {
+                        title: "Rückstich",
+                        description: "Sehr stabile Naht. Steche vorwärts, komme hinter dem letzten Stich wieder hoch und steche zurück in das Ende des letzten Stichs.",
+                        icon: "→←→"
+                    },
+                    {
+                        title: "Blindstich",
+                        description: "Für unsichtbare Säume. Steche abwechselnd minimal in den Hauptstoff und etwas mehr in die Saumkante.",
+                        icon: "⋮⋮⋮"
+                    },
+                    {
+                        title: "Knopf annähen",
+                        description: "Nähe mehrmals durch die Knopflöcher und den Stoff. Wickle das Garn unter dem Knopf um die Fäden, um einen Stiel zu bilden.",
+                        icon: "🔘"
+                    }
+                ],
+                tips: [
+                    "Verwende einen Fingerhut zum Schutz",
+                    "Fadenlänge sollte nicht länger als 50cm sein",
+                    "Mache am Anfang und Ende einen festen Knoten"
+                ]
+            },
+            {
+                name: "Sticken - Kreuzstich",
+                category: "textil",
+                icon: "✖️",
+                difficulty: "Anfänger",
+                description: "Dekorative Kreuzstich-Stickerei lernen",
+                materials: ["Stickgarn", "Sticknadel", "Zählstoff (Aida)", "Stickrahmen", "Schere", "Vorlage"],
+                steps: [
+                    {
+                        title: "Stoff einspannen",
+                        description: "Lege den Stoff zwischen die beiden Ringe des Stickrahmens und ziehe die Schraube fest. Der Stoff sollte straff, aber nicht verzogen sein.",
+                        icon: "⭕"
+                    },
+                    {
+                        title: "Faden vorbereiten",
+                        description: "Schneide etwa 50cm Stickgarn ab. Ziehe 2-3 Fäden heraus (Standard sind 2 für 14er Aida). Fädle die Nadel ohne Knoten.",
+                        icon: "🧵"
+                    },
+                    {
+                        title: "Ersten Diagonalstich",
+                        description: "Beginne unten links, steche diagonal nach oben rechts. Lasse am Anfang etwas Faden auf der Rückseite und sichere ihn durch die ersten Stiche.",
+                        icon: "/"
+                    },
+                    {
+                        title: "Kreuz vollenden",
+                        description: "Arbeite zurück und überkreuze die erste Reihe von unten rechts nach oben links. Alle Kreuze sollten in dieselbe Richtung zeigen.",
+                        icon: "X"
+                    }
+                ],
+                tips: [
+                    "Achte darauf, dass alle Kreuze in die gleiche Richtung zeigen",
+                    "Ziehe die Fäden nicht zu fest",
+                    "Arbeite in Reihen für schnelleres Vorankommen"
+                ]
+            },
+            {
+                name: "Makramee Grundknoten",
+                category: "textil",
+                icon: "🪢",
+                difficulty: "Anfänger",
+                description: "Moderne Makramee-Technik mit Grundknoten",
+                materials: ["Makramee-Garn (3-5mm)", "Schere", "Maßband", "Holzstab oder Ring", "Klebeband"],
+                steps: [
+                    {
+                        title: "Anschlagknoten",
+                        description: "Falte das Garn in der Mitte. Lege die Schlaufe über den Stab, führe die Enden durch die Schlaufe und ziehe fest.",
+                        icon: "🔗"
+                    },
+                    {
+                        title: "Halber Knoten",
+                        description: "Bei 4 Fäden: Lege Faden 1 über Faden 2 und 3, führe Faden 4 über Faden 1, dann unter Faden 2 und 3 und durch die Schlaufe von Faden 1.",
+                        icon: "〰️"
+                    },
+                    {
+                        title: "Kreuzknoten",
+                        description: "Mache einen halben Knoten, dann einen weiteren halben Knoten in die entgegengesetzte Richtung. Das ergibt einen flachen Knoten.",
+                        icon: "⚔️"
+                    },
+                    {
+                        title: "Spiralknoten",
+                        description: "Wiederhole nur halbe Knoten in dieselbe Richtung. Das Werk beginnt sich zu drehen und bildet eine Spirale.",
+                        icon: "🌀"
+                    }
+                ],
+                tips: [
+                    "Kaufe 3-4x mehr Garn als die Projektlänge",
+                    "Halte die Trägerfäden straff",
+                    "Übe die Knoten einzeln, bevor du ein Projekt startest"
+                ]
+            },
+            {
+                name: "Patchwork Quilten",
+                category: "textil",
+                icon: "🧩",
+                difficulty: "Mittelschwer",
+                description: "Farbenfrohe Patchwork-Decken gestalten",
+                materials: ["Verschiedene Baumwollstoffe", "Vlies", "Rückseitenstoff", "Rollschneider", "Schneidematte", "Lineal", "Nähmaschine"],
+                steps: [
+                    {
+                        title: "Stoffe auswählen und zuschneiden",
+                        description: "Wähle 4-8 verschiedene Stoffe, die farblich harmonieren. Schneide Quadrate in gleicher Größe (z.B. 15x15cm inklusive Nahtzugabe).",
+                        icon: "✂️"
+                    },
+                    {
+                        title: "Blöcke zusammennähen",
+                        description: "Nähe Quadrate zu Reihen zusammen, immer rechts auf rechts mit 0,75cm Nahtzugabe. Bügle Nähte zur dunkleren Seite.",
+                        icon: "➕"
+                    },
+                    {
+                        title: "Sandwich erstellen",
+                        description: "Lege den Rückseitenstoff nach unten, dann das Vlies, dann das Patchwork-Top nach oben. Hefte alle drei Lagen zusammen.",
+                        icon: "🥪"
+                    },
+                    {
+                        title: "Quilten",
+                        description: "Nähe durch alle Schichten entlang der Nähte oder in einem Muster. Dies hält alle Lagen zusammen und gibt Textur.",
+                        icon: "〰️"
+                    }
+                ],
+                tips: [
+                    "Wasche alle Stoffe vor dem Zuschneiden",
+                    "Verwende einen Walking Foot für gleichmäßiges Quilten",
+                    "Plane dein Muster vorher auf Papier"
+                ]
+            },
+            {
+                name: "Sockenstricken",
+                category: "textil",
+                icon: "🧦",
+                difficulty: "Fortgeschritten",
+                description: "Kuschelige Socken selbst stricken",
+                materials: ["Sockenwolle (100g)", "Nadelspiel Größe 2,5mm", "Wollnadel", "Schere", "Maschenmarkierer"],
+                steps: [
+                    {
+                        title: "Bündchen stricken",
+                        description: "Schlage 64 Maschen an, verteile auf 4 Nadeln. Stricke im Bündchenmuster (2 rechts, 2 links) für etwa 5cm rundherum.",
+                        icon: "⭕"
+                    },
+                    {
+                        title: "Schaft stricken",
+                        description: "Wechsle zu glatt rechts gestrickt (alle Maschen rechts) für etwa 10-12cm bis zur Ferse.",
+                        icon: "📏"
+                    },
+                    {
+                        title: "Ferse arbeiten",
+                        description: "Arbeite nur über die Hälfte der Maschen (32) hin und zurück in Reihen. Verstärke mit Fersenwand und Käppchen.",
+                        icon: "↩️"
+                    },
+                    {
+                        title: "Fuß und Spitze",
+                        description: "Nimm Maschen an den Seiten auf, stricke den Fuß in Runden. Bei der Spitze nehme gleichmäßig ab bis 8 Maschen übrig sind. Fäden durchziehen.",
+                        icon: "🔻"
+                    }
+                ],
+                tips: [
+                    "Messe deinen Fuß für die perfekte Passform",
+                    "Verwende verstärktes Garn für Ferse und Spitze",
+                    "Markiere den Rundenanfang"
+                ]
+            },
+            {
+                name: "Filzen (Nassfilzen)",
+                category: "textil",
+                icon: "🐑",
+                difficulty: "Anfänger",
+                description: "Aus Wolle gefilzte Objekte herstellen",
+                materials: ["Kardierte Wolle/Filzwolle", "Warmes Wasser", "Seife", "Bambusmatte", "Handtuch", "Nudelholz"],
+                steps: [
+                    {
+                        title: "Wolle auslegen",
+                        description: "Lege dünne Schichten Wolle überlappend auf die Bambusmatte. Arbeite in mindestens 3 Schichten kreuzweise.",
+                        icon: "📐"
+                    },
+                    {
+                        title: "Anfeuchten",
+                        description: "Besprühe die Wolle mit warmem Seifenwasser. Bedecke mit Noppenfolie und drücke vorsichtig die Flüssigkeit in die Wolle.",
+                        icon: "💧"
+                    },
+                    {
+                        title: "Reiben",
+                        description: "Reibe sanft in kreisenden Bewegungen über die Folie. Steigere langsam Druck und Geschwindigkeit. Die Wolle wird dichter.",
+                        icon: "🔄"
+                    },
+                    {
+                        title: "Walken",
+                        description: "Rolle das Projekt in der Matte ein und rolle es 50-100 Mal. Drehe es, rolle erneut. Spüle mit kaltem Wasser aus.",
+                        icon: "🌊"
+                    }
+                ],
+                tips: [
+                    "Arbeite auf einer wasserfesten Unterlage",
+                    "Die Wolle schrumpft beim Filzen um ca. 30-40%",
+                    "Verschiedene Wollfarben können gemischt werden"
+                ]
+            },
+            {
+                name: "Applikationen nähen",
+                category: "textil",
+                icon: "🎨",
+                difficulty: "Mittelschwer",
+                description: "Stoffapplikationen für Kleidung und Deko",
+                materials: ["Hauptstoff", "Applikationsstoff", "Vliesofix", "Nähmaschine", "Bügeleisen", "Schere"],
+                steps: [
+                    {
+                        title: "Motiv vorbereiten",
+                        description: "Zeichne dein Motiv spiegelverkehrt auf die Papierseite von Vliesofix. Schneide grob aus.",
+                        icon: "✏️"
+                    },
+                    {
+                        title: "Aufbügeln",
+                        description: "Bügle das Vliesofix auf die linke Seite des Applikationsstoffs. Schneide das Motiv exakt aus.",
+                        icon: "🔥"
+                    },
+                    {
+                        title: "Positionieren",
+                        description: "Ziehe das Papier ab. Positioniere die Applikation auf dem Hauptstoff und bügle sie fest.",
+                        icon: "📍"
+                    },
+                    {
+                        title: "Festnähen",
+                        description: "Nähe mit einem engen Zickzackstich (Satinstich) um die Kanten der Applikation. Dies versiegelt die Ränder.",
+                        icon: "〰️"
+                    }
+                ],
+                tips: [
+                    "Verwende Stickgarn für schönere Kanten",
+                    "Teste die Bügeltemperatur an einem Rest",
+                    "Stabilisiere dünne Stoffe mit Vlies auf der Rückseite"
+                ]
+            },
+
+            // HOLZ
+            {
+                name: "Grundlagen Holzbearbeitung",
+                category: "holz",
+                icon: "🪵",
+                difficulty: "Anfänger",
+                description: "Erste Schritte in der Holzverarbeitung",
+                materials: ["Holzbretter", "Säge", "Schleifpapier", "Lineal", "Bleistift", "Schraubzwingen"],
+                steps: [
+                    {
+                        title: "Holz auswählen",
+                        description: "Wähle das richtige Holz für dein Projekt. Weichholz (Kiefer, Fichte) ist gut für Anfänger. Prüfe auf Risse und Astlöcher.",
+                        icon: "🌲"
+                    },
+                    {
+                        title: "Anzeichnen",
+                        description: "Markiere deine Schnittlinien mit Bleistift und Lineal. Nutze ein Winkelmaß für 90-Grad-Winkel.",
+                        icon: "📏"
+                    },
+                    {
+                        title: "Sägen",
+                        description: "Fixiere das Holz mit Schraubzwingen. Säge entlang der markierten Linie mit gleichmäßigen Bewegungen. Lass die Säge die Arbeit machen.",
+                        icon: "🪚"
+                    },
+                    {
+                        title: "Schleifen",
+                        description: "Schleife die Kanten mit Schleifpapier (Körnung 120, dann 240). Schleife immer mit der Holzmaserung.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Sicherheit geht vor - trage Schutzbrille",
+                    "Arbeite in einem gut belüfteten Bereich",
+                    "Messe zweimal, schneide einmal"
+                ]
+            },
+            {
+                name: "Vogelhäuschen bauen",
+                category: "holz",
+                icon: "🏠",
+                difficulty: "Mittelschwer",
+                description: "Ein einfaches Vogelhäuschen konstruieren",
+                materials: ["Holzbretter (20mm dick)", "Holzleim", "Schrauben", "Säge", "Bohrer", "Wetterfeste Lasur"],
+                steps: [
+                    {
+                        title: "Teile zuschneiden",
+                        description: "Schneide die Teile zu: Boden (15x15cm), Vorderseite und Rückseite (15x20cm), Seiten (12x20cm), Dach (2x 15x18cm). Bohre ein 3cm Eingangsloch.",
+                        icon: "✂️"
+                    },
+                    {
+                        title: "Zusammenbauen",
+                        description: "Verleime die Seitenwände mit dem Boden. Befestige Vorder- und Rückwand. Lasse alles trocknen.",
+                        icon: "🔨"
+                    },
+                    {
+                        title: "Dach anbringen",
+                        description: "Schraube die Dachteile im Winkel an. Eine Seite sollte als Klappe zum Reinigen abnehmbar sein.",
+                        icon: "🛠️"
+                    },
+                    {
+                        title: "Wetterschutz",
+                        description: "Schleife alles glatt. Trage 2-3 Schichten wetterfeste Lasur auf. Bohre kleine Drainagelöcher in den Boden.",
+                        icon: "🎨"
+                    }
+                ],
+                tips: [
+                    "Verwende unbehandeltes Holz - besser für Vögel",
+                    "Platziere das Häuschen 2-3m hoch",
+                    "Reinige es einmal jährlich nach der Brutsaison"
+                ]
+            },
+            {
+                name: "Holzschnitzen Grundtechniken",
+                category: "holz",
+                icon: "🔪",
+                difficulty: "Mittelschwer",
+                description: "Mit dem Schnitzmesser erste Figuren gestalten",
+                materials: ["Schnitzmesser-Set", "Lindenholz oder Kiefer", "Schnittfeste Handschuhe", "Schleifpapier", "Bleistift"],
+                steps: [
+                    {
+                        title: "Motiv skizzieren",
+                        description: "Zeichne dein Motiv auf das Holz. Beginne mit einfachen Formen wie einem Löffel oder Pilz.",
+                        icon: "✏️"
+                    },
+                    {
+                        title: "Grobform schnitzen",
+                        description: "Schneide die grobe Form aus. Schneide immer vom Körper weg. Entferne größere Holzstücke mit dem größten Messer.",
+                        icon: "🪚"
+                    },
+                    {
+                        title: "Details ausarbeiten",
+                        description: "Nutze kleinere Messer für Details. Mache kleine, kontrollierte Schnitte. Drehe das Werkstück, nicht das Messer.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Finish",
+                        description: "Schleife vorsichtig mit feinem Schleifpapier. Optional mit Leinöl oder Wachs behandeln.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Halte deine Messer scharf - stumpfe sind gefährlicher",
+                    "Trage immer Schutzhandschuhe",
+                    "Lindenholz ist am besten für Anfänger"
+                ]
+            },
+            {
+                name: "Schneidebretter herstellen",
+                category: "holz",
+                icon: "🍴",
+                difficulty: "Anfänger",
+                description: "Praktische Schneidebretter aus Holz",
+                materials: ["Hartholz (Buche, Ahorn)", "Holzleim (lebensmittelecht)", "Schleifmaschine", "Hobel", "Säge", "Mineralöl"],
+                steps: [
+                    {
+                        title: "Holzauswahl",
+                        description: "Wähle Hartholz ohne Risse. Schneide mehrere Streifen in gleicher Breite (z.B. 4-5cm breit, 30cm lang).",
+                        icon: "🌳"
+                    },
+                    {
+                        title: "Verleimen",
+                        description: "Trage Leim auf die Längskanten auf. Füge die Streifen zusammen und presse sie mit Schraubzwingen. Lasse 24h trocknen.",
+                        icon: "〰️"
+                    },
+                    {
+                        title: "Ebnen und Schleifen",
+                        description: "Hobel die Oberfläche eben. Schleife mit Körnung 120, 180 und 240 bis die Oberfläche glatt ist.",
+                        icon: "✨"
+                    },
+                    {
+                        title: "Ölen",
+                        description: "Trage großzügig Mineralöl auf. Lasse es einziehen, wische Überschüsse ab. Wiederhole mehrmals.",
+                        icon: "💧"
+                    }
+                ],
+                tips: [
+                    "Verwende nur lebensmittelechte Materialien",
+                    "Öle das Brett regelmäßig neu",
+                    "Wasche es von Hand, nicht in der Spülmaschine"
+                ]
+            },
+            {
+                name: "Möbel restaurieren",
+                category: "holz",
+                icon: "🪑",
+                difficulty: "Fortgeschritten",
+                description: "Alte Möbel wieder zum Leben erwecken",
+                materials: ["Schleifpapier", "Abbeizer", "Holzspachtel", "Holzlasur oder Lack", "Pinsel", "Handschuhe"],
+                steps: [
+                    {
+                        title: "Alte Farbe entfernen",
+                        description: "Trage Abbeizer mit Pinsel auf. Lasse ihn einwirken. Entferne die weiche Farbe mit einem Spachtel. Arbeite in einem gut belüfteten Raum.",
+                        icon: "🧹"
+                    },
+                    {
+                        title: "Beschädigungen reparieren",
+                        description: "Fülle Risse und Löcher mit Holzspachtel. Lasse trocknen. Schleife bündig.",
+                        icon: "🔧"
+                    },
+                    {
+                        title: "Schleifen",
+                        description: "Schleife das gesamte Möbelstück mit Körnung 120, dann 240. Entferne allen Staub gründlich.",
+                        icon: "✨"
+                    },
+                    {
+                        title: "Neu streichen/lasieren",
+                        description: "Trage 2-3 dünne Schichten Lasur oder Lack auf. Zwischen den Schichten leicht anschleifen und entstauben.",
+                        icon: "🎨"
+                    }
+                ],
+                tips: [
+                    "Arbeite in einer staubfreien Umgebung",
+                    "Trage Schutzkleidung beim Abbeizen",
+                    "Geduld beim Trocknen zahlt sich aus"
+                ]
+            },
+            {
+                name: "Holzdrechseln Basics",
+                category: "holz",
+                icon: "⚙️",
+                difficulty: "Fortgeschritten",
+                description: "Grundlagen des Drechselns lernen",
+                materials: ["Drechselbank", "Drechseleisen-Set", "Holzrohlinge", "Schutzbrille", "Schleifpapier"],
+                steps: [
+                    {
+                        title: "Rohling vorbereiten",
+                        description: "Markiere die Mitte an beiden Enden. Befestige den Rohling zwischen Spindelstock und Reitstock. Stelle sicher, dass er zentriert ist.",
+                        icon: "🎯"
+                    },
+                    {
+                        title: "Grobbearbeitung",
+                        description: "Nutze die Schruppröhre, um die grobe Form zu erstellen. Arbeite von der Mitte zu den Enden. Halte das Werkzeug stabil auf der Auflage.",
+                        icon: "🔨"
+                    },
+                    {
+                        title: "Feinbearbeitung",
+                        description: "Wechsle zu Formröhren und Abstechstahl für Details. Arbeite langsam und gleichmäßig. Prüfe regelmäßig mit einer Schablone.",
+                        icon: "✂️"
+                    },
+                    {
+                        title: "Schleifen",
+                        description: "Schleife bei laufender Maschine mit Schleifpapier von grob zu fein. Trage optional Öl oder Wachs auf.",
+                        icon: "💫"
+                    }
+                ],
+                tips: [
+                    "Starte mit weichem Holz wie Linde",
+                    "Halte deine Werkzeuge scharf",
+                    "Trage immer Schutzbrille und keine losen Kleidungsstücke"
+                ]
+            },
+
+            // PAPIER
+            {
+                name: "Origami Kranich",
+                category: "papier",
+                icon: "🦢",
+                difficulty: "Mittelschwer",
+                description: "Den klassischen Origami-Kranich falten",
+                materials: ["Origami-Papier (15x15cm)", "Falzbein (optional)", "Ebene Arbeitsfläche"],
+                steps: [
+                    {
+                        title: "Vorfalten",
+                        description: "Falte das Quadrat diagonal zur Hälfte, öffne es. Falte es zur anderen Diagonale. Wiederhole horizontal und vertikal. Du hast jetzt ein X und ein + als Faltlinien.",
+                        icon: "✖️"
+                    },
+                    {
+                        title: "Basis erstellen",
+                        description: "Bringe die vier Ecken in die Mitte zusammen, sodass eine kleine quadratische Basis entsteht. Glätte alle Falten.",
+                        icon: "◇"
+                    },
+                    {
+                        title: "Kranichform",
+                        description: "Falte die oberen Dreiecke nach innen. Ziehe die Ecken auseinander, um den Kopf und Schwanz zu bilden. Falte eine Spitze für den Schnabel.",
+                        icon: "🦢"
+                    },
+                    {
+                        title: "Flügel formen",
+                        description: "Klappe die beiden Seitenklappen nach außen für die Flügel. Ziehe den Kranich vorsichtig auseinander.",
+                        icon: "🕊️"
+                    }
+                ],
+                tips: [
+                    "Verwende dünnes, spezielles Origami-Papier",
+                    "Falte präzise - exakte Kanten sind wichtig",
+                    "Übe zuerst mit größerem Papier"
+                ]
+            },
+            {
+                name: "Scrapbooking Grundlagen",
+                category: "papier",
+                icon: "📖",
+                difficulty: "Anfänger",
+                description: "Kreative Fotoalben gestalten",
+                materials: ["Scrapbook-Album", "Bastelpapier", "Fotos", "Kleber", "Schere", "Sticker", "Stempel"],
+                steps: [
+                    {
+                        title: "Layout planen",
+                        description: "Lege Fotos und Dekoelemente ohne Kleber auf die Seite. Experimentiere mit verschiedenen Anordnungen.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Hintergrund gestalten",
+                        description: "Klebe Hintergrundpapier auf die Seite. Verwende kontrastierende Farben oder Muster zu deinen Fotos.",
+                        icon: "🖼️"
+                    },
+                    {
+                        title: "Fotos anbringen",
+                        description: "Klebe Fotos auf Cardstock-Matten für mehr Dimension. Befestige sie auf der Seite.",
+                        icon: "📷"
+                    },
+                    {
+                        title: "Verzieren",
+                        description: "Füge Titel, Journaling, Sticker und andere Verzierungen hinzu. Erzähle die Geschichte hinter den Fotos.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Verwende säurefreie Materialien für langlebige Alben",
+                    "Halte es einfach - weniger ist oft mehr",
+                    "Datiere deine Seiten"
+                ]
+            },
+            {
+                name: "Papierschöpfen",
+                category: "papier",
+                icon: "📄",
+                difficulty: "Mittelschwer",
+                description: "Handgeschöpftes Papier herstellen",
+                materials: ["Altpapier", "Mixer", "Schöpfrahmen", "Große Wanne", "Schwämme", "Filztücher", "Nudelholz"],
+                steps: [
+                    {
+                        title: "Pulpe herstellen",
+                        description: "Zerreiße Altpapier in kleine Stücke. Weiche es 24h in Wasser ein. Mixe es mit Wasser zu einer breiigen Masse.",
+                        icon: "💧"
+                    },
+                    {
+                        title: "Schöpfen",
+                        description: "Fülle die Wanne mit Wasser und Pulpe. Tauche den Schöpfrahmen gerade ein und ziehe ihn gleichmäßig hoch. Die Pulpe verteilt sich auf dem Sieb.",
+                        icon: "🌊"
+                    },
+                    {
+                        title: "Wasser entfernen",
+                        description: "Lasse abtropfen. Drücke mit einem Schwamm Wasser heraus. Drehe den Rahmen auf ein Filztuch und klopfe die Rückseite.",
+                        icon: "💦"
+                    },
+                    {
+                        title: "Trocknen",
+                        description: "Lege ein weiteres Filztuch darüber. Rolle mit dem Nudelholz darüber. Lasse an der Luft oder zwischen Zeitungspapier trocknen.",
+                        icon: "☀️"
+                    }
+                ],
+                tips: [
+                    "Experimentiere mit verschiedenen Papierarten",
+                    "Füge Blütenblätter oder Fasern für Effekte hinzu",
+                    "Die Dicke hängt von der Pulpenkonzentration ab"
+                ]
+            },
+            {
+                name: "Pop-Up Karten basteln",
+                category: "papier",
+                icon: "🎁",
+                difficulty: "Mittelschwer",
+                description: "3D-Effekte in Grußkarten einbauen",
+                materials: ["Fester Karton", "Bastelpapier", "Lineal", "Cutter", "Kleber", "Bleistift"],
+                steps: [
+                    {
+                        title: "Basis vorbereiten",
+                        description: "Falte einen Karton zur Hälfte. Markiere auf der Falzlinie 2 parallele Schnitte (z.B. 3cm lang, 2cm auseinander).",
+                        icon: "📏"
+                    },
+                    {
+                        title: "Pop-Up schneiden",
+                        description: "Schneide die markierten Linien mit dem Cutter. Falte den Streifen nach innen, dann nach außen. Öffne die Karte - der Streifen steht hervor.",
+                        icon: "✂️"
+                    },
+                    {
+                        title: "Element gestalten",
+                        description: "Schneide ein Motiv (Torte, Blume, etc.) aus und klebe es auf den Pop-Up-Streifen. Achte darauf, dass es beim Schließen nicht herausragt.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Außenseite gestalten",
+                        description: "Klebe die fertige Pop-Up-Karte auf eine zweite gefaltete Karte, um die Schnitte zu verbergen. Dekoriere die Außenseite.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Teste den Mechanismus vor dem Dekorieren",
+                    "Nutze festen Karton für Stabilität",
+                    "Plane die Pop-Up-Größe passend zur Karte"
+                ]
+            },
+            {
+                name: "Quilling Grundtechniken",
+                category: "papier",
+                icon: "🌀",
+                difficulty: "Anfänger",
+                description: "Filigraner Papierschmuck durch Quilling",
+                materials: ["Quilling-Papierstreifen", "Quilling-Nadel", "Kleber", "Pinzette", "Schablone (optional)"],
+                steps: [
+                    {
+                        title: "Grundrolle",
+                        description: "Befestige das Ende des Papierstreifens in der Quilling-Nadel. Rolle den Streifen fest auf. Lasse ihn etwas entspannen.",
+                        icon: "⭕"
+                    },
+                    {
+                        title: "Rolle fixieren",
+                        description: "Trage einen Tropfen Kleber auf das Ende des Streifens auf. Drücke es an die Rolle. Ziehe die Nadel heraus.",
+                        icon: "💧"
+                    },
+                    {
+                        title: "Formen erstellen",
+                        description: "Kneife die Rolle an einer Seite zusammen für ein Tropfenform. An zwei Seiten für ein Blatt. Experimentiere mit verschiedenen Formen.",
+                        icon: "🍃"
+                    },
+                    {
+                        title: "Zusammensetzen",
+                        description: "Klebe mehrere Formen zu einem Muster zusammen. Klassische Motive sind Blumen, Schmetterlinge oder abstrakte Designs.",
+                        icon: "🌸"
+                    }
+                ],
+                tips: [
+                    "Halte eine gleichmäßige Spannung beim Rollen",
+                    "Verwende Zahnstocher für präzises Kleben",
+                    "Übe verschiedene Grundformen"
+                ]
+            },
+            {
+                name: "Bucbindung - Japanische Bindung",
+                category: "papier",
+                icon: "📚",
+                difficulty: "Mittelschwer",
+                description: "Handgebundene Notizbücher erstellen",
+                materials: ["Papierbögen", "Karton für Einband", "Nadel", "Buchbindergarn", "Ahle", "Lineal", "Schneideunterlage"],
+                steps: [
+                    {
+                        title: "Seiten vorbereiten",
+                        description: "Falte alle Papierbögen zur Hälfte. Schneide sie auf die gewünschte Größe. Stapel sie ineinander.",
+                        icon: "📄"
+                    },
+                    {
+                        title: "Einband anfertigen",
+                        description: "Schneide zwei Kartondeckel etwas größer als die Seiten. Beziehe sie optional mit Stoff oder dekorativem Papier.",
+                        icon: "📘"
+                    },
+                    {
+                        title: "Löcher stechen",
+                        description: "Markiere 4 Löcher entlang des Falzes in gleichmäßigen Abständen. Steche mit der Ahle durch alle Lagen.",
+                        icon: "🔴"
+                    },
+                    {
+                        title: "Japanische Bindung",
+                        description: "Fädle das Garn durch die Löcher in einem speziellen Muster. Beginne außen, gehe über den Rücken, durch das nächste Loch, usw. Verknote fest.",
+                        icon: "🧵"
+                    }
+                ],
+                tips: [
+                    "Verwende starkes Garn oder gewachstes Leinen",
+                    "Achte auf gleichmäßige Abstände der Löcher",
+                    "Ziehe die Bindung fest, aber nicht zu fest"
+                ]
+            },
+            {
+                name: "Papierblumen basteln",
+                category: "papier",
+                icon: "🌺",
+                difficulty: "Anfänger",
+                description: "Realistische Blumen aus Krepppapier",
+                materials: ["Krepppapier", "Blumendraht", "Floristenband", "Schere", "Kleber"],
+                steps: [
+                    {
+                        title: "Blütenblätter schneiden",
+                        description: "Schneide Blütenblattformen aus Krepppapier. Für eine Rose brauchst du ca. 15-20 Blätter in verschiedenen Größen.",
+                        icon: "✂️"
+                    },
+                    {
+                        title: "Form geben",
+                        description: "Dehne die Mitte jedes Blattes vorsichtig, um eine Wölbung zu erzeugen. Drehe die Spitzen leicht ein.",
+                        icon: "🌀"
+                    },
+                    {
+                        title: "Blüte aufbauen",
+                        description: "Wickle die kleinsten Blätter um das Drahtende. Füge nach und nach größere Blätter hinzu, überlappend. Befestige jedes mit Floristenband.",
+                        icon: "🌹"
+                    },
+                    {
+                        title: "Stiel gestalten",
+                        description: "Umwickle den Draht mit grünem Floristenband. Füge Blätter aus grünem Krepppapier hinzu.",
+                        icon: "🌿"
+                    }
+                ],
+                tips: [
+                    "Krepppapier dehnt sich leicht - sei vorsichtig",
+                    "Mische verschiedene Farbtöne für Realismus",
+                    "Experimentiere mit verschiedenen Blumenarten"
+                ]
+            },
+
+            // METALL
+            {
+                name: "Löten lernen",
+                category: "metall",
+                icon: "🔥",
+                difficulty: "Anfänger",
+                description: "Grundlegende Löttechniken für Elektronik",
+                materials: ["Lötkolben (30-60W)", "Lötzinn", "Lötkolbenständer", "Reinigungsschwamm", "Entlötlitze", "Schutzbrille"],
+                steps: [
+                    {
+                        title: "Lötkolben vorbereiten",
+                        description: "Heize den Lötkolben auf ca. 350°C vor. Reinige die Spitze am feuchten Schwamm und verzinne sie mit etwas Lötzinn.",
+                        icon: "🔌"
+                    },
+                    {
+                        title: "Teile fixieren",
+                        description: "Halte die zu lötenden Teile fest zusammen. Bei Elektronik: Stecke das Bauteil durch die Platine und biege die Beine leicht um.",
+                        icon: "📌"
+                    },
+                    {
+                        title: "Löten",
+                        description: "Berühre beide Teile mit der Lötkolbenspitze für 1-2 Sek. Führe das Lötzinn an die Lötstelle (nicht an den Kolben). Es sollte schmelzen und fließen.",
+                        icon: "💧"
+                    },
+                    {
+                        title: "Abkühlen lassen",
+                        description: "Entferne Kolben und Zinn. Bewege nichts für 2-3 Sekunden. Eine gute Lötstelle ist glänzend und kegelförmig.",
+                        icon: "❄️"
+                    }
+                ],
+                tips: [
+                    "Arbeite in einem belüfteten Raum",
+                    "Berühre niemals die heiße Spitze",
+                    "Übe zuerst auf Schrottplatinen"
+                ]
+            },
+            {
+                name: "Schmieden Grundlagen",
+                category: "metall",
+                icon: "⚒️",
+                difficulty: "Fortgeschritten",
+                description: "Erste Schritte im Schmiedehandwerk",
+                materials: ["Amboss", "Schmiedehammer", "Esse/Schmiede", "Zange", "Stahlstab", "Schutzausrüstung"],
+                steps: [
+                    {
+                        title: "Metall erhitzen",
+                        description: "Erhitze den Stahlstab in der Esse bis er kirschrot glüht (ca. 800-900°C). Das Metall wird formbar.",
+                        icon: "🔥"
+                    },
+                    {
+                        title: "Auf Amboss legen",
+                        description: "Halte das glühende Metall mit der Zange und lege es auf den Amboss. Arbeite schnell - Stahl kühlt rasch ab.",
+                        icon: "🔨"
+                    },
+                    {
+                        title: "Hämmern",
+                        description: "Schlage mit kontrollierten Hammerschlägen. Drehe das Werkstück regelmäßig. Hämmere vom Zentrum zu den Enden.",
+                        icon: "💥"
+                    },
+                    {
+                        title: "Wiederholen",
+                        description: "Wenn das Metall dunkel wird, erhitze es erneut. Wiederhole Erhitzen und Hämmern bis zur gewünschten Form.",
+                        icon: "🔄"
+                    }
+                ],
+                tips: [
+                    "Trage immer Schutzbrille und feste Schuhe",
+                    "Arbeite niemals mit kaltem Metall",
+                    "Lerne erst unter Anleitung eines erfahrenen Schmieds"
+                ]
+            },
+            {
+                name: "Drahtschmuck wickeln",
+                category: "metall",
+                icon: "💎",
+                difficulty: "Anfänger",
+                description: "Schmuck aus Draht gestalten",
+                materials: ["Basteldraht (0,6-1mm)", "Schmuckdraht", "Rundzange", "Flachzange", "Seitenschneider", "Perlen"],
+                steps: [
+                    {
+                        title: "Grundform biegen",
+                        description: "Schneide 20-30cm Draht ab. Forme mit der Rundzange eine Öse am Ende. Dies wird die Basis deines Schmuckstücks.",
+                        icon: "⭕"
+                    },
+                    {
+                        title: "Perlen auffädeln",
+                        description: "Fädle Perlen auf den Draht. Lasse Platz zwischen den Perlen für Wicklungen.",
+                        icon: "📿"
+                    },
+                    {
+                        title: "Draht wickeln",
+                        description: "Wickle dünnen Draht um den Hauptdraht zwischen den Perlen. Dies fixiert sie und gibt Struktur.",
+                        icon: "🌀"
+                    },
+                    {
+                        title: "Verschluss formen",
+                        description: "Forme am anderen Ende einen Haken oder eine Öse als Verschluss. Schneide überschüssigen Draht ab und drücke Enden glatt.",
+                        icon: "🔗"
+                    }
+                ],
+                tips: [
+                    "Verwende weichen Draht wie Kupfer oder Aluminium",
+                    "Halte die Wicklungen eng beieinander",
+                    "Feile scharfe Drahtenden glatt"
+                ]
+            },
+            {
+                name: "Metallprägung",
+                category: "metall",
+                icon: "🖼️",
+                difficulty: "Mittelschwer",
+                description: "Muster in Metallfolie prägen",
+                materials: ["Prägefolie (Aluminium oder Kupfer)", "Prägewerkzeuge/Kugelschreiber", "Vorlage", "Weiche Unterlage (Moosgummi)", "Klebeband"],
+                steps: [
+                    {
+                        title: "Vorlage vorbereiten",
+                        description: "Zeichne oder drucke dein Motiv. Befestige es mit Klebeband auf der Prägefolie.",
+                        icon: "✏️"
+                    },
+                    {
+                        title: "Kontur prägen",
+                        description: "Lege die Folie auf die weiche Unterlage. Fahre mit dem Prägewerkzeug die Linien deines Motivs nach. Drücke gleichmäßig.",
+                        icon: "✍️"
+                    },
+                    {
+                        title: "Details ausarbeiten",
+                        description: "Entferne die Vorlage. Drehe die Folie um und präge von der Rückseite, um erhabene Bereiche zu schaffen.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Finish",
+                        description: "Glätte die Hintergrundbereiche. Optional: Patiniere mit speziellen Lösungen oder poliere erhabene Stellen.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Verwende keine zu dünne Folie - sie reißt leicht",
+                    "Arbeite langsam für gleichmäßige Ergebnisse",
+                    "Experimentiere mit verschiedenen Werkzeugen"
+                ]
+            },
+            {
+                name: "Blechdosen upcyceln",
+                category: "metall",
+                icon: "🥫",
+                difficulty: "Anfänger",
+                description: "Kreative Nutzung alter Konservendosen",
+                materials: ["Saubere Blechdosen", "Acrylfarbe", "Pinsel", "Bohrer", "Schleifpapier", "Hammer & Nagel"],
+                steps: [
+                    {
+                        title: "Dose vorbereiten",
+                        description: "Entferne Etiketten. Wasche und trockne die Dose gründlich. Schleife scharfe Kanten am oberen Rand.",
+                        icon: "🧼"
+                    },
+                    {
+                        title: "Löcher bohren (optional)",
+                        description: "Für Laternen oder Blumentöpfe: Markiere ein Muster und bohre oder hämmere vorsichtig Löcher in die Dose.",
+                        icon: "🔨"
+                    },
+                    {
+                        title: "Bemalen",
+                        description: "Grundiere die Dose mit weißer Acrylfarbe. Lasse trocknen. Bemale sie in deiner Wunschfarbe oder mit Mustern.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Verwenden",
+                        description: "Nutze die Dose als Stiftehalter, Blumentopf, Laterne (mit Teelicht) oder Aufbewahrung.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Fülle die Dose mit Wasser und friere sie ein vor dem Bohren - verhindert Verbeulungen",
+                    "Verwende Metallfarbe für bessere Haftung",
+                    "Versiegle mit Klarlack für Außennutzung"
+                ]
+            },
+
+            // KERAMIK & TON
+            {
+                name: "Töpfern auf der Scheibe",
+                category: "keramik",
+                icon: "🏺",
+                difficulty: "Fortgeschritten",
+                description: "Gefäße auf der Töpferscheibe drehen",
+                materials: ["Töpferscheibe", "Ton (2-3kg)", "Schwamm", "Schneidedraht", "Wasser", "Werkzeuge"],
+                steps: [
+                    {
+                        title: "Ton zentrieren",
+                        description: "Platziere einen Tonklumpen in der Scheibenmitte. Befeuchte deine Hände. Bei mittlerer Geschwindigkeit drücke den Ton mit beiden Händen nach unten und zur Mitte.",
+                        icon: "🎯"
+                    },
+                    {
+                        title: "Öffnen",
+                        description: "Drücke mit Daumen oder Fingern langsam in die Mitte des zentrierten Tons. Lasse ca. 1cm Boden stehen.",
+                        icon: "⭕"
+                    },
+                    {
+                        title: "Hochziehen",
+                        description: "Lege eine Hand innen, eine außen an die Wand. Ziehe sanft nach oben, während du leichten Druck ausübst. Wiederhole mehrmals.",
+                        icon: "⬆️"
+                    },
+                    {
+                        title: "Formen und Glätten",
+                        description: "Forme die Wand zur gewünschten Gefäßform. Glätte mit einem feuchten Schwamm. Schneide das Gefäß mit Draht vom Scheibenkopf ab.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Halte Ton und Hände immer feucht",
+                    "Arbeite langsam - Eile führt zu Missformen",
+                    "Übe zuerst Zylinder, dann andere Formen"
+                ]
+            },
+            {
+                name: "Handaufbau mit Ton",
+                category: "keramik",
+                icon: "✋",
+                difficulty: "Anfänger",
+                description: "Töpfern ohne Scheibe - mit den Händen",
+                materials: ["Ton", "Nudelholz", "Messer", "Schwamm", "Modellierwerkzeuge", "Unterlage"],
+                steps: [
+                    {
+                        title: "Bodenplatte formen",
+                        description: "Rolle Ton ca. 0,5cm dick aus. Schneide eine runde oder eckige Form für den Boden aus.",
+                        icon: "⭕"
+                    },
+                    {
+                        title: "Würste rollen",
+                        description: "Rolle Ton zu gleichmäßigen Würsten (ca. 1cm Durchmesser). Lege sie spiralförmig auf den Boden.",
+                        icon: "🌀"
+                    },
+                    {
+                        title: "Verbinden",
+                        description: "Verstreiche die Innenseite mit Daumen oder Werkzeug, um die Würste zu verbinden. Glätte auch außen für eine einheitliche Oberfläche.",
+                        icon: "〰️"
+                    },
+                    {
+                        title: "Trocknen lassen",
+                        description: "Lasse das Objekt langsam trocknen (bedecke es locker mit Plastik). Zu schnelles Trocknen verursacht Risse.",
+                        icon: "☀️"
+                    }
+                ],
+                tips: [
+                    "Halte den Ton gleichmäßig feucht",
+                    "Arbeite auf einer nicht-haftenden Unterlage",
+                    "Verbinde neue Würste gut mit den vorherigen"
+                ]
+            },
+            {
+                name: "Ton glasieren",
+                category: "keramik",
+                icon: "🎨",
+                difficulty: "Mittelschwer",
+                description: "Keramik mit Glasur veredeln",
+                materials: ["Gebrannte Keramik (Schrühbrand)", "Glasuren", "Pinsel", "Schwamm", "Wachsresist"],
+                steps: [
+                    {
+                        title: "Keramik vorbereiten",
+                        description: "Säubere die gebrannte Keramik von Staub. Trage Wachsresist auf den Boden auf - verhindert Kleben im Ofen.",
+                        icon: "🧹"
+                    },
+                    {
+                        title: "Erste Glasurschicht",
+                        description: "Tauche das Stück in Glasur oder trage sie mit einem Pinsel auf. Eine gleichmäßige, nicht zu dicke Schicht ist ideal.",
+                        icon: "🖌️"
+                    },
+                    {
+                        title: "Weitere Schichten",
+                        description: "Lasse trocknen. Trage 2-3 dünne Schichten auf für volle Deckkraft. Verschiedene Glasuren können kombiniert werden.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Glattbrand",
+                        description: "Brenne die glasierte Keramik bei der vom Hersteller empfohlenen Temperatur (meist 1000-1280°C). Die Glasur schmilzt und wird glänzend.",
+                        icon: "🔥"
+                    }
+                ],
+                tips: [
+                    "Teste Glasuren immer auf Probefliesen",
+                    "Glasiere nicht zu dick - sie läuft sonst",
+                    "Halte den Boden glasurfrei"
+                ]
+            },
+            {
+                name: "Reliefplatten modellieren",
+                category: "keramik",
+                icon: "🖼️",
+                difficulty: "Mittelschwer",
+                description: "Dekorative Tonplatten mit Relief",
+                materials: ["Ton", "Nudelholz", "Modellierwerkzeuge", "Stempel/Texturen", "Messer", "Schnur"],
+                steps: [
+                    {
+                        title: "Platte ausrollen",
+                        description: "Rolle Ton gleichmäßig zu einer Platte aus (ca. 1cm dick). Verwende zwei Holzleisten als Abstandshalter für gleichmäßige Dicke.",
+                        icon: "📏"
+                    },
+                    {
+                        title: "Design einarbeiten",
+                        description: "Drücke Stempel, Spitze oder Werkzeuge in den Ton, um Muster zu erzeugen. Oder schnitze ein Design mit Werkzeugen.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Form ausschneiden",
+                        description: "Schneide die Platte in die gewünschte Form (rechteckig, rund, etc.). Glätte die Kanten mit einem feuchten Schwamm.",
+                        icon: "✂️"
+                    },
+                    {
+                        title: "Aufhängung anbringen",
+                        description: "Bohre mit einem Strohhalm zwei Löcher oben für die Aufhängung. Lasse langsam und gleichmäßig trocknen.",
+                        icon: "🔗"
+                    }
+                ],
+                tips: [
+                    "Lege Ton auf Stoff - verhindert Anhaften",
+                    "Experimentiere mit verschiedenen Texturen",
+                    "Plane Schrumpfung ein (ca. 10-15%)"
+                ]
+            },
+
+            // SCHMUCK
+            {
+                name: "Perlenketten auffädeln",
+                category: "schmuck",
+                icon: "📿",
+                difficulty: "Anfänger",
+                description: "Schöne Ketten aus Perlen gestalten",
+                materials: ["Perlen", "Schmuckdraht oder -faden", "Verschluss", "Quetschperlen", "Schere", "Flachzange"],
+                steps: [
+                    {
+                        title: "Länge messen",
+                        description: "Miss die gewünschte Kettenlänge plus 10cm für den Verschluss. Schneide den Faden/Draht zu.",
+                        icon: "📏"
+                    },
+                    {
+                        title: "Verschluss befestigen",
+                        description: "Fädle eine Quetschperle, dann eine Hälfte des Verschlusses auf. Führe den Faden zurück durch die Quetschperle. Drücke sie mit der Zange fest.",
+                        icon: "🔗"
+                    },
+                    {
+                        title: "Perlen auffädeln",
+                        description: "Fädle deine Perlen in der gewünschten Reihenfolge auf. Verberge das kurze Fadenende in den ersten Perlen.",
+                        icon: "📿"
+                    },
+                    {
+                        title: "Kette abschließen",
+                        description: "Fädle eine Quetschperle und die zweite Verschlusshälfte auf. Führe den Faden zurück durch einige Perlen. Quetsche die Perle fest. Schneide überschüssigen Faden ab.",
+                        icon: "✂️"
+                    }
+                ],
+                tips: [
+                    "Verwende Schmuckdraht für schwere Perlen",
+                    "Plane dein Design vor dem Auffädeln",
+                    "Knote zwischen wertvollen Perlen"
+                ]
+            },
+            {
+                name: "Armbänder knüpfen",
+                category: "schmuck",
+                icon: "🎀",
+                difficulty: "Anfänger",
+                description: "Freundschaftsbänder und Makramee-Armbänder",
+                materials: ["Stickgarn oder Makramee-Garn", "Schere", "Klebeband", "Maßband"],
+                steps: [
+                    {
+                        title: "Fäden vorbereiten",
+                        description: "Schneide 3-6 Fäden, jeweils etwa 80cm lang. Knote sie am oberen Ende zusammen. Befestige den Knoten mit Klebeband.",
+                        icon: "🎯"
+                    },
+                    {
+                        title: "Grundknoten",
+                        description: "Für ein einfaches Muster: Nimm den linken Faden, mache eine 4-Form über den nächsten Faden, ziehe ihn durch und fest. Wiederhole mit jedem Faden nach rechts.",
+                        icon: "4️⃣"
+                    },
+                    {
+                        title: "Muster knüpfen",
+                        description: "Wiederhole die Knotenreihen. Für Chevron-Muster arbeite von außen nach innen. Für Streifen immer mit dem gleichen Faden.",
+                        icon: "〰️"
+                    },
+                    {
+                        title: "Abschließen",
+                        description: "Knüpfe bis zur gewünschten Länge. Mache einen festen Knoten am Ende. Flechte die Enden für einen Verschluss oder binde sie zusammen.",
+                        icon: "🔗"
+                    }
+                ],
+                tips: [
+                    "Halte die Spannung gleichmäßig",
+                    "Verwende verschiedene Farben für Muster",
+                    "Übe Grundknoten einzeln"
+                ]
+            },
+            {
+                name: "Ohrringe mit Perlen",
+                category: "schmuck",
+                icon: "💍",
+                difficulty: "Anfänger",
+                description: "Selbstgemachte Perlenohrringe",
+                materials: ["Ohrhaken", "Nietstifte", "Perlen", "Rundzange", "Seitenschneider", "Schmuckzange"],
+                steps: [
+                    {
+                        title: "Perlen auffädeln",
+                        description: "Stecke eine oder mehrere Perlen auf einen Nietstift. Lasse ca. 1cm Draht über der letzten Perle stehen.",
+                        icon: "📿"
+                    },
+                    {
+                        title: "Öse formen",
+                        description: "Biege den überstehenden Draht im 90-Grad-Winkel ab. Greife das Ende mit der Rundzange und drehe es zu einer Öse.",
+                        icon: "⭕"
+                    },
+                    {
+                        title: "An Ohrhaken befestigen",
+                        description: "Öffne die Öse leicht seitlich (nie aufziehen). Hänge sie in den Ohrhaken ein. Schließe die Öse wieder.",
+                        icon: "🔗"
+                    },
+                    {
+                        title: "Zweiten Ohrring",
+                        description: "Wiederhole den Vorgang für den zweiten Ohrring. Achte darauf, dass beide identisch sind.",
+                        icon: "👯"
+                    }
+                ],
+                tips: [
+                    "Verwende hypoallergene Ohrhaken für empfindliche Haut",
+                    "Öffne Ösen immer seitlich, nicht aufziehen",
+                    "Messe beide Ohrringe ab für Symmetrie"
+                ]
+            },
+            {
+                name: "Harzschmuck gießen",
+                category: "schmuck",
+                icon: "💎",
+                difficulty: "Mittelschwer",
+                description: "Individuelle Schmuckstücke aus Epoxidharz",
+                materials: ["Epoxidharz (2-Komponenten)", "Silikonformen", "Pigmente/Glitzer", "Einschlüsse (Blumen, Glitzer)", "Rührstäbchen", "Handschuhe"],
+                steps: [
+                    {
+                        title: "Harz anmischen",
+                        description: "Mische Harz und Härter nach Herstellerangabe (meist 1:1). Rühre 3-5 Minuten langsam, um Luftblasen zu vermeiden.",
+                        icon: "🥤"
+                    },
+                    {
+                        title: "Farbe und Deko",
+                        description: "Füge Pigmente, Glitzer oder andere Zusätze hinzu. Rühre vorsichtig. Platziere getrocknete Blüten oder Einschlüsse in der Form.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Gießen",
+                        description: "Gieße das Harz langsam in die Form. Eventuell in Schichten für spezielle Effekte. Entferne Luftblasen mit einem Föhn oder Zahnstocher.",
+                        icon: "💧"
+                    },
+                    {
+                        title: "Aushärten und Finalisieren",
+                        description: "Lasse 24-48h aushärten. Entnimm vorsichtig aus der Form. Bohre Löcher für Aufhängungen. Poliere mit feinem Schleifpapier.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Arbeite in einem staubfreien, warmen Raum",
+                    "Trage immer Handschuhe",
+                    "Verwende UV-Harz für schnelleres Aushärten"
+                ]
+            },
+
+            // DEKO
+            {
+                name: "Makramee Wandbehang",
+                category: "deko",
+                icon: "🧵",
+                difficulty: "Mittelschwer",
+                description: "Moderner Wandschmuck aus Makramee",
+                materials: ["Makramee-Garn (3mm)", "Holzstab oder Ast", "Schere", "Maßband", "Kamm"],
+                steps: [
+                    {
+                        title: "Fäden anbringen",
+                        description: "Schneide 20-30 Fäden zu je 2-3m. Befestige sie mit Anschlagknoten am Holzstab. Du hast nun doppelt so viele arbeitende Fäden.",
+                        icon: "🪢"
+                    },
+                    {
+                        title: "Grundmuster knüpfen",
+                        description: "Arbeite Reihen von Kreuzknoten. Für ein Fischgrätmuster: Nutze jeweils die Hälfte von zwei benachbarten Knotengruppen für neue Knoten.",
+                        icon: "〰️"
+                    },
+                    {
+                        title: "Design variieren",
+                        description: "Integriere Spiralknoten, offene Bereiche oder verschiedene Knotendichten für Textur und Interesse.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Fransen gestalten",
+                        description: "Lasse die Enden als Fransen hängen. Kämme sie mit einem Kamm auf für einen gefächerten Look. Schneide gerade oder schräg.",
+                        icon: "✂️"
+                    }
+                ],
+                tips: [
+                    "Beginne mit einem einfachen Muster",
+                    "Hänge den Stab während der Arbeit auf",
+                    "Plane 4x die Projektlänge für die Fäden"
+                ]
+            },
+            {
+                name: "Kerzen gießen",
+                category: "deko",
+                icon: "🕯️",
+                difficulty: "Anfänger",
+                description: "Duftkerzen selbst herstellen",
+                materials: ["Kerzenwachs oder Sojawachs", "Dochte", "Formen oder Gläser", "Duftöle", "Farbstoffe", "Topf für Wasserbad", "Thermometer"],
+                steps: [
+                    {
+                        title: "Docht befestigen",
+                        description: "Fixiere den Docht am Boden der Form (z.B. mit einem Tropfen Wachs oder Klebepunkt). Halte ihn oben mittig mit einem Holzstab oder Dochthalter.",
+                        icon: "📍"
+                    },
+                    {
+                        title: "Wachs schmelzen",
+                        description: "Schmelze das Wachs im Wasserbad auf ca. 70-80°C. Verwende ein Thermometer zur Kontrolle.",
+                        icon: "🔥"
+                    },
+                    {
+                        title: "Duft und Farbe",
+                        description: "Bei ca. 65°C füge Duftöl (ca. 10% der Wachsmenge) und Farbstoff hinzu. Rühre gut durch.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Gießen und Aushärten",
+                        description: "Gieße das Wachs langsam in die Form. Lasse es komplett aushärten (4-24h je nach Größe). Kürze den Docht auf ca. 1cm.",
+                        icon: "💧"
+                    }
+                ],
+                tips: [
+                    "Sojawachs brennt sauberer als Paraffinwachs",
+                    "Überhitze das Wachs nicht - Brandgefahr",
+                    "Lasse Kerzen vor Gebrauch 24-48h 'reifen'"
+                ]
+            },
+            {
+                name: "Trockenblumen Arrangements",
+                category: "deko",
+                icon: "🌾",
+                difficulty: "Anfänger",
+                description: "Langlebige Blumendeko aus Trockenblumen",
+                materials: ["Frische Blumen (Rosen, Lavendel, Eukalyptus)", "Schnur", "Vase oder Rahmen", "Schere", "Optional: Haarspray"],
+                steps: [
+                    {
+                        title: "Blumen vorbereiten",
+                        description: "Wähle frische Blumen in vollem Zustand. Entferne untere Blätter. Binde 3-5 Stiele mit Schnur zusammen.",
+                        icon: "💐"
+                    },
+                    {
+                        title: "Trocknen",
+                        description: "Hänge die Sträuße kopfüber an einem dunklen, trockenen, luftigen Ort. Vermeide direkte Sonne. Trocknung dauert 2-4 Wochen.",
+                        icon: "☀️"
+                    },
+                    {
+                        title: "Arrangement gestalten",
+                        description: "Arrangiere getrocknete Blumen in einer Vase, binde sie zu Sträußen oder klebe sie in Rahmen. Kombiniere verschiedene Texturen und Farben.",
+                        icon: "🎨"
+                    },
+                    {
+                        title: "Versiegeln",
+                        description: "Sprühe optional mit Haarspray ein, um Farbe zu bewahren und Zerfall zu verhindern.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Beste Blumen: Rosen, Lavendel, Strohblumen, Eukalyptus",
+                    "Schneller trocknen: im Backofen bei niedriger Temperatur",
+                    "Halte sie staubfrei für lange Haltbarkeit"
+                ]
+            },
+            {
+                name: "Mosaikkunst",
+                category: "deko",
+                icon: "🎨",
+                difficulty: "Mittelschwer",
+                description: "Bunte Mosaike für Töpfe und Rahmen",
+                materials: ["Mosaiksteine oder Fliesen", "Basis (Topf, Rahmen, Tablett)", "Fliesenkleber", "Fugenmasse", "Schwamm", "Handschuhe"],
+                steps: [
+                    {
+                        title: "Design planen",
+                        description: "Skizziere dein Muster auf Papier. Lege Mosaiksteine trocken auf die Basis aus, um das Design zu testen.",
+                        icon: "✏️"
+                    },
+                    {
+                        title: "Steine kleben",
+                        description: "Trage Fliesenkleber auf einen kleinen Bereich auf. Drücke Mosaiksteine ein, lasse kleine Abstände. Arbeite abschnittsweise.",
+                        icon: "🔨"
+                    },
+                    {
+                        title: "Trocknen lassen",
+                        description: "Lasse den Kleber 24h trocknen. Bewege das Stück nicht.",
+                        icon: "⏰"
+                    },
+                    {
+                        title: "Verfugen",
+                        description: "Mische Fugenmasse an. Verteile sie mit einem Schwamm in alle Zwischenräume. Wische Überschüsse ab. Nach 20 Min poliere mit einem trockenen Tuch.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Trage Handschuhe - Fugenmasse trocknet die Haut aus",
+                    "Verwende verschiedene Farben für Kontrast",
+                    "Versiegle Außenmosaike mit wetterfestem Lack"
+                ]
+            },
+            {
+                name: "Pompons basteln",
+                category: "deko",
+                icon: "🎈",
+                difficulty: "Anfänger",
+                description: "Flauschige Deko-Pompons aus Wolle",
+                materials: ["Wolle", "Pappe", "Schere", "Zirkel", "Nadel"],
+                steps: [
+                    {
+                        title: "Schablone anfertigen",
+                        description: "Zeichne zwei identische Ringe auf Pappe (Außenkreis z.B. 8cm, Innenkreis 3cm Durchmesser). Schneide beide aus.",
+                        icon: "⭕"
+                    },
+                    {
+                        title: "Wolle wickeln",
+                        description: "Lege beide Ringe aufeinander. Wickle Wolle durch das Loch und um den Ring herum, bis der innere Ring gefüllt ist. Je mehr Wolle, desto dichter der Pompon.",
+                        icon: "🌀"
+                    },
+                    {
+                        title: "Aufschneiden",
+                        description: "Schneide die Wolle am Außenrand zwischen den beiden Pappringen durch. Schiebe einen Faden zwischen die Pappen und knote fest.",
+                        icon: "✂️"
+                    },
+                    {
+                        title: "Formen",
+                        description: "Entferne die Pappschablonen. Schüttele den Pompon. Schneide vorstehende Fäden für eine runde Form.",
+                        icon: "✨"
+                    }
+                ],
+                tips: [
+                    "Verwende mehrere Wollfarben für bunte
